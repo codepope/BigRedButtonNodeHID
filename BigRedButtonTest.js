@@ -1,3 +1,5 @@
+// MIT licensed. (C) Dj Walker-Morgan 2013
+
 var BigRedButton = require('./BigRedButton');
 
 var bigRedButton;

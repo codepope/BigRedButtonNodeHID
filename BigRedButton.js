@@ -1,3 +1,5 @@
+// BigRedButton.js - Dream Cheeky Big Red Button node.js/node-hid driver
+// MIT licensed. (C) Dj Walker-Morgan 2013
 
 var HID = require('node-hid');
 var util = require('util');
