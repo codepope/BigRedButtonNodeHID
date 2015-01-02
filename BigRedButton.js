@@ -55,7 +55,11 @@ function BigRedButton(index)
 util.inherits(BigRedButton, events.EventEmitter);
 
 BigRedButton.prototype.askForStatus = function() {
-   this.hid.write(cmdStatus);
+   try {
+      this.hid.write(cmdStatus);
+   } catch(e) {
+      this.close();
+   }
 };
 
 BigRedButton.prototype.interpretData = function(error, data) {
