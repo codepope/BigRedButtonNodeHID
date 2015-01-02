@@ -6,8 +6,8 @@ var util = require('util');
 var events = require('events');
 
 var allDevices;
-var cmd_status=new Buffer([ 0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02 ]);
-var last_state;
+var cmdStatus=new Buffer([ 0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02 ]);
+var lastState;
 
 var LID_DOWN=0x15, LID_UP=0x17, BUTTON_DOWN=0x16;
 
@@ -35,11 +35,11 @@ function BigRedButton(index)
    this.button = bigRedButton[index];
    this.hid = new HID.HID(bigRedButton[index].path);
 
-   this.hid.write(cmd_status);
+   this.hid.write(cmdStatus);
 
    var that=this;
    this.hid.read(function(error,data) {
-      last_state=data[0];
+      lastState=data[0];
       that.hid.read(that.interpretData.bind(that));
    });
    this.interval = setInterval(this.askForStatus.bind(this),100);
@@ -55,7 +55,7 @@ function BigRedButton(index)
 util.inherits(BigRedButton, events.EventEmitter);
 
 BigRedButton.prototype.askForStatus = function() {
-   this.hid.write(cmd_status);
+   this.hid.write(cmdStatus);
 };
 
 BigRedButton.prototype.interpretData = function(error, data) {
@@ -63,37 +63,37 @@ BigRedButton.prototype.interpretData = function(error, data) {
       this.close();
       return;
    }
-   var n_state=data[0];
+   var newState=data[0];
 
-   if (last_state!=n_state) {
-      if (last_state==LID_DOWN && n_state==LID_UP) {
+   if (lastState!=newState) {
+      if (lastState==LID_DOWN && newState==LID_UP) {
          this.emit("lidRaised");
-      } else if (last_state==LID_UP && n_state==BUTTON_DOWN) {
+      } else if (lastState==LID_UP && newState==BUTTON_DOWN) {
          this.emit("buttonPressed");
-      } else if (last_state==BUTTON_DOWN && n_state==LID_UP) {
+      } else if (lastState==BUTTON_DOWN && newState==LID_UP) {
          this.emit("buttonReleased");
-      } else if (last_state==BUTTON_DOWN && n_state==LID_DOWN) {
+      } else if (lastState==BUTTON_DOWN && newState==LID_DOWN) {
          this.emit("buttonReleased");
          this.emit("lidClosed");
-      } else if (last_state==LID_UP && n_state==LID_DOWN) {
+      } else if (lastState==LID_UP && newState==LID_DOWN) {
          this.emit("lidClosed");
       }
-      last_state=n_state;
+      lastState=newState;
    }
 
    this.hid.read(this.interpretData.bind(this));
 }
 
 BigRedButton.prototype.isLidUp = function() {
-   return last_state==LID_UP || last_state==BUTTON_DOWN;
+   return lastState==LID_UP || lastState==BUTTON_DOWN;
 }
 
 BigRedButton.prototype.isButtonPressed = function() {
-   return last_state==BUTTON_DOWN;
+   return lastState==BUTTON_DOWN;
 }
 
 BigRedButton.prototype.isLidDown = function() {
-   return last_state==LID_DOWN;
+   return lastState==LID_DOWN;
 }
 
 exports.BigRedButton = BigRedButton;
