@@ -32,6 +32,7 @@ function BigRedButton(index)
     if (index > bigRedButton.length || index < 0) {
         throw new Error("Index " + index + " out of range, only " + bigRedButton.length + " BigRedButton found");
     }
+    this.button = bigRedButton[index];
     this.hid = new HID.HID(bigRedButton[index].path);
 
     this.hid.write(cmd_status);
@@ -41,7 +42,14 @@ function BigRedButton(index)
     	last_state=data[0];
     	that.hid.read(that.interpretData.bind(that));
     });
-    setInterval(this.askForStatus.bind(this),100);
+    this.interval = setInterval(this.askForStatus.bind(this),100);
+    this.close = function() {
+       clearInterval(this.interval);
+       this.interval = false;
+       setTimeout(function() {
+          this.hid.close();
+       }.bind(this), 100);
+    };
 }
 
 util.inherits(BigRedButton, events.EventEmitter);
@@ -51,6 +59,10 @@ BigRedButton.prototype.askForStatus = function() {
 };
 
 BigRedButton.prototype.interpretData = function(error, data) {
+   if (!this.interval || error || !data) {
+      this.close();
+      return;
+   }
    var n_state=data[0];
 
    if(last_state!=n_state) {
