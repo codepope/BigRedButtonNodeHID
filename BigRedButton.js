@@ -13,10 +13,8 @@ var LID_DOWN=0x15, LID_UP=0x17, BUTTON_DOWN=0x16;
 
 function getAllDevices()
 {
-   if (!allDevices) {
-      allDevices = HID.devices(7476,13);
-   }
-   return allDevices;
+     allDevices = HID.devices(7476,13);
+     return allDevices;
 }
 
 function BigRedButton(index)
@@ -29,6 +27,7 @@ function BigRedButton(index)
    if (!bigRedButton.length) {
       throw new Error("No BigRedButton could be found");
    }
+
    if (index > bigRedButton.length || index < 0) {
       throw new Error("Index " + index + " out of range, only " + bigRedButton.length + " BigRedButton found");
    }
@@ -49,6 +48,7 @@ function BigRedButton(index)
       setTimeout(function() {
          this.hid.close();
       }.bind(this), 100);
+      this.emit("buttonGone");
    };
 }
 

@@ -2,27 +2,42 @@
 
 var BigRedButton = require('./BigRedButton');
 
-var bigRedButton;
+function configureButton(button) {
+  button.on('buttonPressed', function () {
+    console.log('button pressed');
+  });
 
-for (var i = 0; i < BigRedButton.deviceCount(); i++) {
+  button.on('buttonReleased', function () {
+    console.log('button released');
+  });
 
-    console.log('opening BigRedButton', i);
+  button.on('lidRaised', function () {
+    console.log('lid raised');
+  });
+  button.on('lidClosed', function () {
+    console.log('lid closed');
+  });
 
-    bigRedButton = new BigRedButton.BigRedButton(i);
+  button.on('buttonGone', function () {
+    console.log('button gone');
+    setTimeout(newButton,1000);
+  });
+}
 
-    bigRedButton.on('buttonPressed', function () {
-            console.log('button pressed');
-        });
+function newButton() {
+  console.log("Getting button 0")
+  try {
+    bigRedButton=new BigRedButton.BigRedButton(0);
+  }
+  catch(err) {
+      console.log("No button, waiting");
+      setTimeout(newButton,1000);
+      return;
+  }
 
-    bigRedButton.on('buttonReleased', function () {
-            console.log('button released');
-        });
+  configureButton(bigRedButton);
+  console.log("Configured button 0")
+  return;
+}
 
-	bigRedButton.on('lidRaised', function () {
-            console.log('lid raised');
-        });
-	bigRedButton.on('lidClosed', function () {
-            console.log('lid closed');
-        });
-
- }
+newButton();
