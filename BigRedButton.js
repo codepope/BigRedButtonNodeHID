@@ -102,3 +102,7 @@ BigRedButton.prototype.isLidDown = function() {
 
 exports.BigRedButton = BigRedButton;
 exports.deviceCount = function () { return getAllDevices().length; }
+exports.resetDevices = function () {
+   allDevices = null
+   getAllDevices();
+}
