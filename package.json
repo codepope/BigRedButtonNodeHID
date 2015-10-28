@@ -24,5 +24,8 @@
   "bugs": {
     "url": "https://github.com/codepope/BigRedButtonNodeHID/issues"
   },
-  "homepage": "https://github.com/codepope/BigRedButtonNodeHID"
+  "homepage": "https://github.com/codepope/BigRedButtonNodeHID",
+  "dependencies": {
+    "node-hid": "^0.5.1"
+  }
 }
