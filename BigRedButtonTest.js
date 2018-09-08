@@ -24,6 +24,7 @@ function configureButton(button) {
   });
 }
 
+// Test a new button
 function newButton() {
   console.log("Getting button 0")
   try {
