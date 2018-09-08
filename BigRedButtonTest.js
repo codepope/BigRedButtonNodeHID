@@ -1,4 +1,4 @@
-// MIT licensed. (C) Dj Walker-Morgan 2013
+// MIT licensed. (C) Dj Walker-Morgan 2018
 
 var BigRedButton = require('./BigRedButton');
 
